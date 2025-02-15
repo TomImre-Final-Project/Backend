@@ -31,6 +31,7 @@ class RegisteredUserController extends Controller
         ]);
 
 
+
         $user = User::create([
             'name' => $request->username,
             'email' => $request->email,
@@ -42,7 +43,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        Auth::login($user); 
 
         return response()->noContent();
     }
