@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class RestaurantLog extends Model
 {
-    /** @use HasFactory<\Database\Factories\RestaurantLogFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'restaurant_id',
+        'status',
+        'until',
+    ];
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
+    }
 }
