@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->text('description');
+            $table->decimal('discount_percentage', 5, 2);
+            $table->timestamp('start_date')->useCurrent();
+            $table->timestamp('end_date')->useCurrent();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

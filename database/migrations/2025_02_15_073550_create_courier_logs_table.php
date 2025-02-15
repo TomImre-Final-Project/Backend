@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('courier_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('courier_id')->constrained('users');
+            $table->foreignId('order_id')->constrained();
+            $table->enum('action', ['claimed', 'delivered']);
             $table->timestamps();
         });
     }

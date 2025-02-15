@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('restaurant_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('restaurant_id')->constrained();
+            $table->enum('status', ['active', 'inactive']);
+            $table->timestamp('until')->nullable();
             $table->timestamps();
         });
     }
