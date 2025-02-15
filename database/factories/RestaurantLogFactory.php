@@ -17,7 +17,9 @@ class RestaurantLogFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'restaurant_id' => \App\Models\Restaurant::factory(),
+            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'until' => $this->faker->optional()->date(),
         ];
     }
 }

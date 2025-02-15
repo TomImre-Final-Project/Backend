@@ -17,7 +17,11 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'order_id' => \App\Models\Order::factory(),
+            'payment_status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
+            'payment_method' => $this->faker->randomElement(['credit_card', 'paypal', 'bank_transfer']),
+            'transaction_id' => $this->faker->optional()->uuid,
+            'payment_date' => now(),
         ];
     }
 }
