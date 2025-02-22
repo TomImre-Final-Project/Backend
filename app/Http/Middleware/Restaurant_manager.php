@@ -16,7 +16,7 @@ class Restaurant_manager
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || !(Auth::user()->role === 'retaurant_manager')) {
+        if (!Auth::check() || !(Auth::user()->role === 'restaurant_manager')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         return $next($request); //continue
