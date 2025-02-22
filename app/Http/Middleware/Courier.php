@@ -16,7 +16,7 @@ class Courier
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || !(Auth::user()->role === 'courier')) {
+        if (!Auth::check() || !(Auth::user()->role === 'courier'|| Auth::user()->role === 'admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         return $next($request); //continue

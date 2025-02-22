@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class Restaurant_manager
+class Customer
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || !(Auth::user()->role === 'restaurant_manager'|| Auth::user()->role === 'admin')) {
+        if (!Auth::check() || !(Auth::user()->role === 'customer' || Auth::user()->role === 'admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         return $next($request); //continue
