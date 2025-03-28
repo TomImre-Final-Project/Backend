@@ -13,15 +13,13 @@ return new class extends Migration {
         Schema::create('dishes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('restaurant_id')->constrained();
-            $table->foreignId('category_id')->constrained();
+            $table->foreignId('restaurant_id');
+            $table->foreignId('category_id');
             $table->decimal('price', 10, 2);
             $table->text('ingredients');
             $table->boolean('is_available')->default(true);
             $table->string('image')->nullable();
             $table->timestamps();
-
-            $table->check('price >= 0');
 
         });
     }

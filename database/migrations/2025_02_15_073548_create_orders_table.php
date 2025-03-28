@@ -23,7 +23,6 @@ return new class extends Migration {
             $table->text('special_instructions')->nullable();
             $table->timestamps();
 
-            $table->check('total_price >= 0');
         });
     }
 
