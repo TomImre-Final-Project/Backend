@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Restaurant;
+use App\Models\Dish;
+use App\Models\Category;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -24,5 +27,9 @@ class DatabaseSeeder extends Seeder
             'phone' => '1234567890',
             'address' => 'Admin Address',
         ]);
+
+        Restaurant::factory(10)->create();
+        Category::factory(10)->create();
+        Dish::factory(100)->create();
     }
 }

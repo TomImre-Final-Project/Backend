@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('address');
             $table->string('phone');
-            $table->foreignId('manager_id')->constrained('users');
+            $table->foreignId('manager_id')->nullable()->constrained('users');
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
         });
