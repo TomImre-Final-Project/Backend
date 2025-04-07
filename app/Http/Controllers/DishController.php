@@ -42,6 +42,12 @@ class DishController extends Controller
         $dish->image = $request->image;
         $dish->save();
     }
+    public function getByRestaurant($restaurantId)
+    {
+        $dishes = Dish::where('restaurant_id', $restaurantId)->get();
+
+        return response()->json($dishes);
+    }
     
     public function destroy($id)
     {

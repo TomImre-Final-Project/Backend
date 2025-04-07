@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RestaurantLog;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
 class RestaurantLogController extends Controller
@@ -38,5 +39,11 @@ class RestaurantLogController extends Controller
     {
         RestaurantLog::findOrFail($id)->delete();
         return response()->json(['message' => 'Restaurant log deleted successfully']);
+    }
+
+    public function getDishes(Restaurant $restaurant)
+    {
+        $dishes = $restaurant->dishes;
+        return response()->json($dishes);
     }
 }
