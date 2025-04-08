@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('courier_id')->nullable()->constrained('users');
             $table->timestamp('order_date');
             $table->enum('status', ['pending', 'in_delivery', 'delivered', 'cancelled']);
-            $table->decimal('total_price', 10, 2);
+            $table->integer('total_price');
             $table->timestamp('picked_up_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->text('special_instructions')->nullable();

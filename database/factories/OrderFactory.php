@@ -22,7 +22,7 @@ class OrderFactory extends Factory
             'courier_username' => $this->faker->optional()->randomElement(\App\Models\User::where('role', 'courier')->pluck('username')->toArray()),
             'order_date' => now(),
             'status' => $this->faker->randomElement(['pending', 'in_delivery', 'delivered', 'cancelled']),
-            'total_price' => $this->faker->randomFloat(2, 10, 500),
+            'total_price' => $this->faker->numberBetween(0, 1000000),
             'picked_up_at' => $this->faker->optional()->dateTime(),
             'delivered_at' => $this->faker->optional()->dateTime(),
             'special_instructions' => $this->faker->optional()->text(100),
