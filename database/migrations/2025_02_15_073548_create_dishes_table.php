@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->foreignId('restaurant_id')->constrained('restaurants');
             $table->foreignId('category_id')->constrained('categories');
-            $table->decimal('price', 10, 2);
+            $table->integer('price');
             $table->text('ingredients');
             $table->boolean('is_available')->default(true);
             $table->string('image')->nullable();

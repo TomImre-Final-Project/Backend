@@ -22,7 +22,7 @@ class DishFactory extends Factory
             'name' => $this->faker->word,
             'restaurant_id' => Restaurant::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
-            'price' => $this->faker->randomFloat(2, 5, 100),
+            'price' => $this->faker->numberBetween(1000, 10000),
             'ingredients' => $this->faker->sentence,
             'is_available' => $this->faker->boolean,
             'image' => $this->faker->optional()->imageUrl(),
