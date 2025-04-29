@@ -15,9 +15,9 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_username' => \App\Models\User::factory()->create()->username,
+            'user_id' => \App\Models\User::factory(),
             'restaurant_id' => \App\Models\Restaurant::factory(),
-            'courier_username' => $this->faker->optional()->randomElement(\App\Models\User::where('role', 'courier')->pluck('username')->toArray()),
+            'courier_id' => $this->faker->optional()->randomElement(\App\Models\User::where('role', 'courier')->pluck('id')->toArray()),
             'order_date' => now(),
             'status' => $this->faker->randomElement(['pending', 'confirmed', 'preparing', 'ready', 'delivering', 'delivered', 'cancelled']),
             'total_price' => $this->faker->numberBetween(0, 1000000),
