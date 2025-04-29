@@ -27,7 +27,7 @@ class OrderController extends Controller
             'restaurant_id' => 'required|exists:restaurants,id',
             'courier_id' => 'nullable|exists:users,id',
             'order_date' => 'required|date',
-            'status' => 'required|in:pending,in_delivery,delivered,cancelled',
+            'status' => 'required|in:pending,confirmed,preparing,ready,delivering,delivered,cancelled',
             'total_price' => 'required|integer|min:0',
             'special_instructions' => 'nullable|string'
         ]);
@@ -63,9 +63,7 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'courier_id' => 'nullable|exists:users,id',
-            'order_date' => 'required|date',
-            'status' => 'required|in:pending,in_delivery,delivered,cancelled',
+            'status' => 'required|in:pending,confirmed,preparing,ready,delivering,delivered,cancelled',
             'total_price' => 'required|integer|min:0',
             'special_instructions' => 'nullable|string'
         ]);
@@ -76,8 +74,6 @@ class OrderController extends Controller
 
         try {
             $order = Order::findOrFail($id);
-            $order->courier_id = $request->courier_id;
-            $order->order_date = $request->order_date;
             $order->status = $request->status;
             $order->total_price = $request->total_price;
             $order->special_instructions = $request->special_instructions;
@@ -104,6 +100,128 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error deleting order',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * List all orders for admin panel
+     */
+    public function listOrders()
+    {
+        $orders = Order::with(['user', 'restaurant', 'courier'])->get();
+        return response()->json($orders);
+    }
+
+    /**
+     * Place an order (customer specific)
+     */
+    public function placeOrder(Request $request)
+    {
+        // This method would be used for customers to place orders
+        // Implementation would be similar to store but with additional validation
+        // and possibly different business logic
+        return $this->store($request);
+    }
+
+    /**
+     * Get orders that are ready for delivery
+     */
+    public function getDeliverableOrders()
+    {
+        $orders = Order::with(['user', 'restaurant'])
+            ->where('status', 'ready')
+            ->get();
+        return response()->json($orders);
+    }
+
+    /**
+     * Get orders assigned to the current courier
+     */
+    public function getMyDeliveries(Request $request)
+    {
+        $courierId = $request->user()->id;
+        $orders = Order::with(['user', 'restaurant'])
+            ->where('courier_id', $courierId)
+            ->whereIn('status', ['delivering', 'delivered'])
+            ->get();
+        return response()->json($orders);
+    }
+
+    /**
+     * Accept an order for delivery
+     */
+    public function acceptOrder(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            
+            // Check if the order is ready for delivery
+            if ($order->status !== 'ready') {
+                return response()->json([
+                    'message' => 'This order is not ready for delivery'
+                ], 400);
+            }
+            
+            // Check if the order is already assigned to a courier
+            if ($order->courier_id !== null) {
+                return response()->json([
+                    'message' => 'This order is already assigned to a courier'
+                ], 400);
+            }
+            
+            // Assign the order to the current courier
+            $order->courier_id = $request->user()->id;
+            $order->status = 'delivering';
+            $order->save();
+            
+            return response()->json([
+                'message' => 'Order accepted for delivery',
+                'order' => $order
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error accepting order',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Mark an order as delivered
+     */
+    public function markAsDelivered(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            
+            // Check if the order is assigned to the current courier
+            if ($order->courier_id !== $request->user()->id) {
+                return response()->json([
+                    'message' => 'This order is not assigned to you'
+                ], 403);
+            }
+            
+            // Check if the order is in delivering status
+            if ($order->status !== 'delivering') {
+                return response()->json([
+                    'message' => 'This order is not in delivering status'
+                ], 400);
+            }
+            
+            // Update the order status
+            $order->status = 'delivered';
+            $order->delivered_at = now();
+            $order->save();
+            
+            return response()->json([
+                'message' => 'Order marked as delivered',
+                'order' => $order
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error marking order as delivered',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -24,6 +24,8 @@ Route::middleware(['auth:sanctum', 'check.role:admin'])->prefix('admin')->group(
     Route::get('/users', [UserController::class, 'listUsers']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
+    Route::get('/orders', [OrderController::class, 'listOrders']);
+    Route::put('/orders/{id}', [OrderController::class, 'update']);
 });
 
 // Customer Routes
@@ -34,8 +36,10 @@ Route::middleware(['auth:sanctum', 'check.role:customer'])->prefix('customer')->
 
 // Courier Routes
 Route::middleware(['auth:sanctum', 'check.role:courier'])->prefix('courier')->group(function () {
-    //Route::get('/deliveries', [CourierController::class, 'listDeliveries']);
-    //Route::post('/pickup/{id}', [CourierController::class, 'pickupOrder']);
+    Route::get('/deliverable', [OrderController::class, 'getDeliverableOrders']);
+    Route::get('/my-deliveries', [OrderController::class, 'getMyDeliveries']);
+    Route::post('/accept-order/{id}', [OrderController::class, 'acceptOrder']);
+    Route::post('/mark-delivered/{id}', [OrderController::class, 'markAsDelivered']);
 });
 
 // Restaurant Manager Routes

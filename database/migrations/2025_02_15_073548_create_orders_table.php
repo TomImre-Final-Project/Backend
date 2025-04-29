@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
             $table->foreignId('courier_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamp('order_date');
-            $table->enum('status', ['pending', 'in_delivery', 'delivered', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'preparing', 'ready', 'delivering', 'delivered', 'cancelled'])->default('pending');
             $table->integer('total_price');
             $table->timestamp('picked_up_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
