@@ -8,8 +8,6 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\OrderItemController;
 
-
-
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -22,27 +20,25 @@ Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/order-items', [OrderItemController::class, 'store']);
 
 // Admin Routes
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-
+Route::middleware(['auth:sanctum', 'check.role:admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'listUsers']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::put('/restaurants/{id}', [RestaurantController::class, 'update']);
 });
 
 // Customer Routes
-Route::middleware(['auth:sanctum', 'role:customer'])->prefix('customer')->group(function () {
-
+Route::middleware(['auth:sanctum', 'check.role:customer'])->prefix('customer')->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
     Route::post('/order', [OrderController::class, 'placeOrder']);
 });
 
 // Courier Routes
-Route::middleware(['auth:sanctum', 'role:courier'])->prefix('courier')->group(function () {
-
+Route::middleware(['auth:sanctum', 'check.role:courier'])->prefix('courier')->group(function () {
     //Route::get('/deliveries', [CourierController::class, 'listDeliveries']);
     //Route::post('/pickup/{id}', [CourierController::class, 'pickupOrder']);
 });
 
 // Restaurant Manager Routes
-Route::middleware(['auth:sanctum', 'role:restaurantmanager'])->prefix('restaurantmanager')->group(function () {
-
+Route::middleware(['auth:sanctum', 'check.role:restaurant_manager'])->prefix('restaurantmanager')->group(function () {
     //Route::post('/menu', [RestaurantManagerController::class, 'addMenuItem']);
 });

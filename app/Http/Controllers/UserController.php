@@ -76,4 +76,9 @@ class UserController extends Controller
 
         return response()->json($user);
     }
+
+    public function listUsers()
+    {
+        return response()->json(User::all());
+    }
 }
