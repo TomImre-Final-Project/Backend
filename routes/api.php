@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\CategoryController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -18,6 +19,7 @@ Route::get('/restaurants', [RestaurantController::class, 'index']);
 Route::get('/restaurants/{restaurantId}/dishes', [DishController::class, 'getByRestaurant']);
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/order-items', [OrderItemController::class, 'store']);
+Route::get('/categories', [CategoryController::class, 'index']);
 
 // Admin Routes
 Route::middleware(['auth:sanctum', 'check.role:admin'])->prefix('admin')->group(function () {
@@ -44,5 +46,12 @@ Route::middleware(['auth:sanctum', 'check.role:courier'])->prefix('courier')->gr
 
 // Restaurant Manager Routes
 Route::middleware(['auth:sanctum', 'check.role:restaurant_manager'])->prefix('restaurantmanager')->group(function () {
-    //Route::post('/menu', [RestaurantManagerController::class, 'addMenuItem']);
+    Route::get('/restaurant', [RestaurantController::class, 'getMyRestaurant']);
+    Route::put('/restaurant', [RestaurantController::class, 'updateMyRestaurant']);
+    Route::get('/orders', [OrderController::class, 'getRestaurantOrders']);
+    Route::put('/orders/{id}', [OrderController::class, 'updateOrder']);
+    Route::get('/dishes', [DishController::class, 'getMyRestaurantDishes']);
+    Route::post('/dishes', [DishController::class, 'store']);
+    Route::put('/dishes/{id}', [DishController::class, 'update']);
+    Route::delete('/dishes/{id}', [DishController::class, 'destroy']);
 });

@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('dishes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->foreignId('restaurant_id')->constrained('restaurants');
             $table->foreignId('category_id')->constrained('categories');
             $table->integer('price');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -27,7 +28,7 @@ class OrderController extends Controller
             'restaurant_id' => 'required|exists:restaurants,id',
             'courier_id' => 'nullable|exists:users,id',
             'order_date' => 'required|date',
-            'status' => 'required|in:pending,confirmed,preparing,ready,delivering,delivered,cancelled',
+            'status' => 'required|in:pending,confirmed,ready,delivering,delivered,cancelled',
             'total_price' => 'required|integer|min:0',
             'special_instructions' => 'nullable|string'
         ]);
@@ -63,7 +64,7 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:pending,confirmed,preparing,ready,delivering,delivered,cancelled',
+            'status' => 'required|in:pending,confirmed,ready,delivering,delivered,cancelled',
             'total_price' => 'required|integer|min:0',
             'special_instructions' => 'nullable|string'
         ]);
@@ -222,6 +223,74 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error marking order as delivered',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get orders for the restaurant manager's restaurant
+     */
+    public function getRestaurantOrders(Request $request)
+    {
+        $restaurant = Restaurant::where('manager_id', $request->user()->id)->first();
+        if (!$restaurant) {
+            return response()->json([
+                'message' => 'No restaurant found for this manager'
+            ], 404);
+        }
+
+        $orders = Order::with(['user', 'restaurant', 'orderItems.dish'])
+            ->where('restaurant_id', $restaurant->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
+
+    /**
+     * Update an order's status and details (restaurant manager specific)
+     */
+    public function updateOrder(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:pending,confirmed,ready,delivering,delivered,cancelled',
+            'special_instructions' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $restaurant = Restaurant::where('manager_id', $request->user()->id)->first();
+            if (!$restaurant) {
+                return response()->json([
+                    'message' => 'No restaurant found for this manager'
+                ], 404);
+            }
+
+            $order = Order::findOrFail($id);
+            
+            // Check if the order belongs to the restaurant manager's restaurant
+            if ($order->restaurant_id !== $restaurant->id) {
+                return response()->json([
+                    'message' => 'Unauthorized to update this order'
+                ], 403);
+            }
+
+            $order->status = $request->status;
+            if ($request->has('special_instructions')) {
+                $order->special_instructions = $request->special_instructions;
+            }
+            $order->save();
+
+            return response()->json([
+                'message' => 'Order updated successfully',
+                'order' => $order
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error updating order',
                 'error' => $e->getMessage()
             ], 500);
         }

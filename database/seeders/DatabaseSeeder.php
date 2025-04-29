@@ -17,33 +17,78 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
+        // Create random users if none exist
+        if (User::count() === 0) {
+            User::factory(10)->create();
+        }
 
-        User::create([
-            'username' => 'adminuser',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-            'phone' => '1234567890',
-            'address' => 'Admin Address',
-        ]);
+        // Create admin user if it doesn't exist
+        if (!User::where('email', 'admin@example.com')->exists()) {
+            User::create([
+                'username' => 'adminuser',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+                'phone' => '1234567890',
+                'address' => 'Admin Address',
+            ]);
+        }
 
-        Restaurant::factory(10)->create();
-        Category::factory(10)->create();
-        Dish::factory(100)->create();
+        // Create courier user if it doesn't exist
+        if (!User::where('email', 'courier@example.com')->exists()) {
+            User::create([
+                'username' => 'courieruser',
+                'email' => 'courier@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'courier',
+                'phone' => '1234567891',
+                'address' => 'Courier Address',
+            ]);
+        }
 
-        // Create a few restaurants
-        $restaurant1 = Restaurant::create([
-            'name' => 'Példa Étterem',
-            'address' => 'Budapest, Példa utca 1.',
-            'phone' => '+36 1 234 5678'
-        ]);
+        // Create restaurant manager user if it doesn't exist
+        if (!User::where('email', 'restaurantmanager@example.com')->exists()) {
+            User::create([
+                'username' => 'restaurantmanager',
+                'email' => 'restaurantmanager@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'restaurant_manager',
+                'phone' => '1234567892',
+                'address' => 'Restaurant Manager Address',
+            ]);
+        }
 
-        $restaurant2 = Restaurant::create([
-            'name' => 'Másik Étterem',
-            'address' => 'Budapest, Másik utca 2.',
-            'phone' => '+36 1 234 5679'
-        ]);
+        // Create restaurants if none exist
+        if (Restaurant::count() === 0) {
+            Restaurant::factory(10)->create();
+        }
+        
+        // Create categories if none exist
+        if (Category::count() === 0) {
+            Category::factory(10)->create();
+        }
+        
+        // Create dishes if none exist
+        if (Dish::count() === 0) {
+            Dish::factory(100)->create();
+        }
+
+        // Create example restaurants if they don't exist
+        if (!Restaurant::where('name', 'Példa Étterem')->exists()) {
+            $restaurant1 = Restaurant::create([
+                'name' => 'Példa Étterem',
+                'address' => 'Budapest, Példa utca 1.',
+                'phone' => '+36 1 234 5678'
+            ]);
+        }
+
+        if (!Restaurant::where('name', 'Másik Étterem')->exists()) {
+            $restaurant2 = Restaurant::create([
+                'name' => 'Másik Étterem',
+                'address' => 'Budapest, Másik utca 2.',
+                'phone' => '+36 1 234 5679'
+            ]);
+        }
 
         // Add dishes to the first restaurant
        /* $restaurant1->dishes()->createMany([

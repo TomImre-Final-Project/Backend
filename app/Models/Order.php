@@ -19,6 +19,7 @@ class Order extends Model
         'picked_up_at',
         'delivered_at',
         'special_instructions',
+        'estimated_delivery_time',
     ];
 
     public function user()
