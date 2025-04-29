@@ -6,9 +6,7 @@ use App\Models\Restaurant;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Dish>
- */
+
 class DishFactory extends Factory
 {
     /**
