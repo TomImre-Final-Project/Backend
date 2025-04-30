@@ -23,7 +23,7 @@ class DishFactory extends Factory
             'price' => $this->faker->numberBetween(1000, 10000),
             'ingredients' => $this->faker->sentence,
             'is_available' => $this->faker->boolean,
-            'image' => $this->faker->optional()->imageUrl(),
+            'image' => $this->faker->imageUrl(),
             'created_at' => now(),
         ];
     }
