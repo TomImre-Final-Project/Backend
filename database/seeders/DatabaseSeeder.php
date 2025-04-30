@@ -50,6 +50,16 @@ class DatabaseSeeder extends Seeder
                 'address' => 'Restaurant Manager Address',
             ]);
         }
+        if (!User::where('email', 'customer@example.com')->exists()) {
+            User::create([
+                'username' => 'customer',
+                'email' => 'customer@example.com',
+                'password' => Hash::make('password123'),
+                'role' => 'customer',
+                'phone' => '1234567893',
+                'address' => 'Customer Address',
+            ]);
+        }
 
         if (Restaurant::count() === 0) {
             Restaurant::factory(10)->create();
