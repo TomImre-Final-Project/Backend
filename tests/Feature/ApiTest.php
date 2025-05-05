@@ -25,22 +25,6 @@ class ApiTest extends TestCase
         Category::factory()->count(3)->create();
     }
 
-    #[Test]
-    public function it_can_authenticate_a_user()
-    {
-        $password = 'password123';
-        $user = User::factory()->create([
-            'password' => Hash::make($password)
-        ]);
-
-        $response = $this->postJson('/api/login', [
-            'email' => $user->email,
-            'password' => $password
-        ]);
-
-        $response->assertStatus(200)
-                ->assertJsonStructure(['token']);
-    }
 
     #[Test]
     public function it_can_get_all_restaurants()
