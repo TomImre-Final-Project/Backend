@@ -4,21 +4,20 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Restaurant;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RestaurantTest extends TestCase
 {
-    use RefreshDatabase;
-
-    /** @test */
+    #[Test]
     public function only_active_restaurants_are_returned()
     {
-        Restaurant::factory()->create(['status' => 'active']);
-        Restaurant::factory()->create(['status' => 'inactive']);
+        // Create active and inactive restaurants
+        Restaurant::factory()->count(3)->create(['status' => 'active']);
+        Restaurant::factory()->count(2)->create(['status' => 'inactive']);
 
         $response = $this->getJson('/api/restaurants');
 
-        $response->assertStatus(200);
-        $this->assertCount(1, collect($response->json())->where('status', 'active'));
+        $response->assertStatus(200)
+                ->assertJsonCount(3); // Only active restaurants should be returned
     }
 } 

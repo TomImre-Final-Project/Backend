@@ -55,3 +55,18 @@ Route::middleware(['auth:sanctum', 'check.role:restaurant_manager'])->prefix('re
     Route::put('/dishes/{id}', [DishController::class, 'update']);
     Route::delete('/dishes/{id}', [DishController::class, 'destroy']);
 });
+
+// Image handling route
+Route::get('/image/{path}', function ($path) {
+    // Check if it's a placeholder URL
+    if (strpos($path, 'http') === 0) {
+        return redirect($path);
+    }
+    
+    // Otherwise, serve from storage
+    $filePath = storage_path('app/public/' . $path);
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+    return response()->json(['error' => 'Image not found'], 404);
+})->where('path', '.*');
