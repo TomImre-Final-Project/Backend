@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum', 'check.role:admin'])->prefix('admin')->group(
 Route::middleware(['auth:sanctum', 'check.role:customer'])->prefix('customer')->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
     Route::post('/order', [OrderController::class, 'placeOrder']);
+    Route::get('/orders/current', [OrderController::class, 'getCurrentOrders']);
+    Route::get('/orders/history', [OrderController::class, 'getOrderHistory']);
 });
 
 // Courier Routes

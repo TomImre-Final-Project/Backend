@@ -295,4 +295,32 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get current (active) orders for the customer
+     */
+    public function getCurrentOrders(Request $request)
+    {
+        $userId = $request->user()->id;
+        $orders = Order::with(['restaurant', 'orderItems.dish'])
+            ->where('user_id', $userId)
+            ->whereNotIn('status', ['delivered', 'cancelled'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
+
+    /**
+     * Get order history for the customer
+     */
+    public function getOrderHistory(Request $request)
+    {
+        $userId = $request->user()->id;
+        $orders = Order::with(['restaurant', 'orderItems.dish'])
+            ->where('user_id', $userId)
+            ->whereIn('status', ['delivered', 'cancelled'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
 }
